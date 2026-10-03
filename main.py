@@ -28,7 +28,7 @@ from src.matrix_view import (
 )
 from src.report import OutputBundle, save_outputs
 
-#: Label keluaran dalam urutan tampil; kunci ini sama dengan report.VARIANT_FILES.
+#: Label keluaran dalam urutan tampil
 LABELS = ("Biner", "Keabu-abuan 16 bit", "RGB 8 bit")
 
 
