@@ -105,7 +105,7 @@ def _prompt_for_input() -> list[str]:
     Returns:
         Daftar string path yang sudah divalidasi oleh collect_inputs().
     """
-    from src.image_io import ImageLoadError, collect_inputs
+    from src.image_io import collect_inputs
 
     print("=" * 78)
     print("MODE INTERAKTIF — Ketik path citra yang ingin diproses.")
