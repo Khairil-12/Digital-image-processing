@@ -2,119 +2,118 @@
 
 Program pengolahan citra digital untuk tugas **Pengolahan Citra Digital (PCD)** — mengkonversi berkas citra `.bmp`, `.jpg`, dan `.png` menjadi tiga representasi: **Biner**, **Keabu-abuan 16 bit**, dan **RGB 8 bit**, lengkap dengan ekspor matriks, laporan, dan visualisasi.
 
-## 📸 Fitur Utama
+## Features
 
-| Fitur | Deskripsi |
+| Feature | Description |
 |---|---|
-| **Multi-format input** | Mendukung `.bmp`, `.jpg`, `.jpeg`, `.png` (termasuk 16-bit PNG) |
-| **3 Representasi output** | Biner (threshold), Keabu-abuan 16-bit (BT.601 luminance), RGB 8-bit |
-| **Ekspor matriks** | `.npy` (NumPy) + `.txt` (human-readable 5×5 preview) |
-| **Visualisasi** | Figure matplotlib 2×2 (original, Biner, Grey16, RGB8) |
-| **Laporan otomatis** | `report.txt` + `summary.csv` (UTF-8 BOM, semicolon-delimited) |
-| **BMP 1-bit** | Berkas biner diekspor sebagai BMP 1-bit per piksel asli |
-| **Mode interaktif** | Jalankan tanpa argumen → prompt path di terminal |
-| **Threshold Otsu** | Pilihan `'auto'` untuk threshold adaptif Otsu |
+| **Multi-format input** | Supports `.bmp`, `.jpg`, `.jpeg`, `.png` (including 16-bit PNG) |
+| **3 Output representations** | Binary (threshold), 16-bit Greyscale (BT.601 luminance), RGB 8-bit |
+| **Matrix export** | `.npy` (NumPy) + `.txt` (human-readable 5x5 preview) |
+| **Visualization** | Matplotlib 2x2 figure (original, Binary, Grey16, RGB8) |
+| **Automatic report** | `report.txt` + `summary.csv` (UTF-8 BOM, semicolon-delimited) |
+| **BMP 1-bit** | Binary image exported as native 1-bit-per-pixel BMP |
+| **Interactive mode** | Run without arguments for interactive terminal prompt |
+| **Otsu threshold** | Use `'auto'` option for adaptive Otsu thresholding |
 
-## 🚀 Cara Penggunaan
+## Usage
 
-### Mode Interaktif (Tanpa Argumen)
+### Interactive Mode (No Arguments)
 
 ```bash
 python main.py
-# → Program meminta path citra secara interaktif
-# → Re-prompts jika path salah
-# → Ketik 'q' untuk keluar
 ```
 
-### CLI dengan Argumen
+The program will prompt for an image path interactively. Re-prompts on invalid path. Type `'q'` to exit.
+
+### CLI with Arguments
 
 ```bash
-# Proses satu berkas
-python main.py --input foto.png --threshold 150
+# Process a single file
+python main.py --input photo.png --threshold 150
 
-# Proses seluruh folder
+# Process an entire folder
 python main.py --input samples/
 
-# Threshold otomatis (Otsu)
-python main.py --input foto.png --threshold auto
+# Automatic threshold (Otsu)
+python main.py --input photo.png --threshold auto
 
-# Tanpa tampilan visual (headless/CI)
-python main.py --input foto.png --no-display
+# No visual display (headless/CI)
+python main.py --input photo.png --no-display
 
-# Simpan figur ke file
-python main.py --input foto.png --save-figure
+# Save figure to file
+python main.py --input photo.png --save-figure
 
-# Ubah folder keluaran
-python main.py --input foto.png --output-dir hasil/
+# Change output directory
+python main.py --input photo.png --output-dir results/
 
-# Ubah ukuran preview matriks
-python main.py --input foto.png --preview 10
+# Change matrix preview size
+python main.py --input photo.png --preview 10
 ```
 
 ### Automation via Pipe
 
 ```bash
-echo "foto.png" | python main.py --no-display
+echo "photo.png" | python main.py --no-display
 ```
 
-## 📁 Struktur Project
+## Project Structure
 
 ```
 P2/
-├── main.py                      # Entry point CLI (argparse + orchestrator)
-├── requirements.txt             # Dependencies
-├── README.md                    # Dokumentasi ini
-│
-├── doc/
-│   └── digital_image_processing_prd.md   # PRD lengkap (FR, AC, NFR)
-│
-├── src/
-│   ├── __init__.py              # Package marker
-│   ├── image_io.py              # Loading (.bmp/.jpg/.png), validasi, normalisasi float32
-│   ├── transforms.py            # Biner, Greyscale16 (BT.601), RGB8, Otsu
-│   ├── report.py                # Ekspor matriks (.npy/.txt), CSV, report.txt
-│   ├── matrix_view.py           # Format slice 5×5, assert shape/range
-│   └── display.py               # Visualisasi matplotlib 2×2
-│
-├── tests/
-│   ├── __init__.py              # Package marker
-│   ├── make_samples.py          # Generator sampel uji (3 format)
-│   ├── verify.py                # Suite verifikasi (63 pemeriksaan)
-│   └── samples/                 # Berkas sampel
-│       ├── test.bmp
-│       ├── test.jpg
-│       └── test_16bit.png
-│
-└── output/                      # Hasil proses (di-generate saat runtime)
-    ├── matrices/                # .npy + .txt
-    ├── images/                  # .png + .bmp 1-bit
-    ├── report.txt
-    └── summary.csv
+|-- main.py                      # Entry point CLI (argparse + orchestrator)
+|-- requirements.txt             # Dependencies
+|-- README.md                    # Documentation
+|
+|-- doc/
+|   |-- digital_image_processing_prd.md   # Full PRD (FR, AC, NFR)
+|
+|-- src/
+|   |-- __init__.py              # Package marker
+|   |-- image_io.py              # Loading (.bmp/.jpg/.png), validation, float32 normalization
+|   |-- transforms.py            # Binary, Greyscale16 (BT.601), RGB8, Otsu
+|   |-- report.py                # Export matrices (.npy/.txt), CSV, report.txt
+|   |-- matrix_view.py           # Format slice 5x5, assert shape/range
+|   |-- display.py               # Matplotlib 2x2 visualization
+|
+|-- tests/
+|   |-- __init__.py              # Package marker
+|   |-- make_samples.py          # Test sample generator (3 formats)
+|   |-- verify.py                # Verification suite (63 checks)
+|   |-- samples/                 # Sample files
+|       |-- test.bmp
+|       |-- test.jpg
+|       |-- test_16bit.png
+|
+|-- output/                      # Generated at runtime
+    |-- matrices/                # .npy + .txt
+    |-- images/                  # .png + .bmp 1-bit
+    |-- report.txt
+    |-- summary.csv
 ```
 
-## 📋 Functional Requirements (PRD)
+## Functional Requirements (PRD)
 
-| FR | Deskripsi | Status |
+| FR | Description | Status |
 |---|---|---|
-| **FR-1** | Input citra multi-format (CLI argumen / interaktif terminal) | ✅ |
-| **FR-2** | Konversi ke 3 representasi (Biner, Grey16, RGB8) | ✅ |
-| **FR-3** | Resolusi terjaga, nilai pada rentang yang dijanjikan | ✅ |
-| **FR-4** | Ekspor matriks + laporan (report.txt, summary.csv) | ✅ |
-| **FR-5** | Tampilan visual + BMP 1-bit asli | ✅ |
+| **FR-1** | Multi-format image input (CLI arguments / interactive terminal) | Done |
+| **FR-2** | Conversion to 3 representations (Binary, Grey16, RGB8) | Done |
+| **FR-3** | Resolution preserved, values within specified ranges | Done |
+| **FR-4** | Matrix export + report (report.txt, summary.csv) | Done |
+| **FR-5** | Visual display + native BMP 1-bit | Done |
 
-## 🧪 Verifikasi
+## Verification
 
 ```bash
-# Jalankan seluruh suite verifikasi (63 pemeriksaan)
+# Run full verification suite (63 checks)
 python tests/verify.py
 
-# Generate sampel uji (jika belum ada)
+# Generate test samples (if not already present)
 python tests/make_samples.py
 ```
 
-**Coverage:** AC-1 sampai AC-12 terverifikasi.
+Coverage: AC-1 through AC-12 verified.
 
-## 🔧 Dependencies
+## Dependencies
 
 ```
 opencv-python>=4.8
@@ -128,17 +127,20 @@ Install:
 pip install -r requirements.txt
 ```
 
-## 📐 Algoritma
+## Algorithms
 
-### Keabu-abuan 16-bit (BT.601 Luminance)
+### Greyscale 16-bit (BT.601 Luminance)
+
 $$Y = \lfloor 0.299R + 0.587G + 0.114B \rfloor_{16\text{-bit}}$$
 
-### Biner (Threshold)
-$$B(x,y) = \begin{cases} 255 & \text{ jika } Y(x,y) \geq T \\ 0 & \text{ jika } Y(x,y) < T \end{cases}$$
+### Binary (Threshold)
 
-### Threshold Otsu
-Menghitung $T$ optimal yang meminimalkan *weighted within-class variance* dari histogram greyscale.
+$$B(x,y) = \begin{cases} 255 & \text{if } Y(x,y) \geq T \\ 0 & \text{if } Y(x,y) < T \end{cases}$$
 
-## 👤 Author
+### Otsu Threshold
 
-Dibuat untuk tugas **Pengolahan Citra Digital** — Smt 5.
+Computes optimal threshold $T$ that minimizes weighted within-class variance of the greyscale histogram.
+
+## Author
+
+Created for **Digital Image Processing** assignment — Semester 5.
