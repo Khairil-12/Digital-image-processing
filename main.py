@@ -1,8 +1,6 @@
 """Titik masuk program: analisis citra multi-format.
-
 Menghasilkan tiga representasi (Biner, Keabu-abuan 16 bit, RGB 8 bit) dari berkas
 .bmp, .jpg, dan .png, lengkap dengan matriks, laporan, dan tampilan visual.
-
 Contoh:
     python main.py --input samples/
     python main.py --input foto.png --threshold 150
@@ -10,12 +8,10 @@ Contoh:
 """
 
 from __future__ import annotations
-
 import argparse
 import sys
 import time
 from pathlib import Path
-
 from src import transforms
 from src.display import display_all
 from src.image_io import ImageLoadError, collect_inputs, load_image
@@ -28,9 +24,7 @@ from src.matrix_view import (
 )
 from src.report import OutputBundle, save_outputs
 
-#: Label keluaran dalam urutan tampil
 LABELS = ("Biner", "Keabu-abuan 16 bit", "RGB 8 bit")
-
 
 def build_parser() -> argparse.ArgumentParser:
     """Susun parser argumen baris perintah."""
@@ -93,15 +87,12 @@ def _parse_threshold(raw: str) -> str | int:
     except ValueError:
         raise ValueError(f"--threshold harus integer 0..255 atau 'auto', diterima {raw!r}") from None
 
-
 def _prompt_for_input() -> list[str]:
     """Minta pengguna mengetik path berkas/folder secara interaktif (FR-1, Metode B).
-
     Terus meminta hingga path yang diberikan valid (ada dan mengandung
     citra yang didukung), atau pengguna memilih keluar.
     Validasi dilakukan di dalam loop sehingga path salah hanya menyebabkan
     re-prompt, bukan crash.
-
     Returns:
         Daftar string path yang sudah divalidasi oleh collect_inputs().
     """
@@ -129,8 +120,6 @@ def _prompt_for_input() -> list[str]:
         if not raw:
             print("  [!] Path tidak boleh kosong. Coba lagi.")
             continue
-
-        # Validasi di dalam loop — path salah → pesan galat → re-prompt (FR-1).
         try:
             paths = collect_inputs([raw])
             return [str(p) for p in paths]
@@ -147,7 +136,6 @@ def process_one(
     save_figure: bool,
 ) -> dict[str, object]:
     """Proses satu berkas citra dari pembacaan sampai seluruh artefak tertulis.
-
     Args:
         path: Lokasi berkas citra.
         threshold_raw: Ambang sebagai integer 0..255 atau "auto".
@@ -155,10 +143,8 @@ def process_one(
         output_dir: Folder keluaran utama.
         show: Bila True, figur ditampilkan di jendela.
         save_figure: Bila True, figur disimpan ke PNG.
-
     Returns:
         Dict berisi ringkasan keluaran, daftar berkas tertulis, dan figur.
-
     Raises:
         ImageLoadError: Berkas bermasalah.
         MatrixCheckError: Jaminan bentuk atau rentang matriks dilanggar.
@@ -194,7 +180,6 @@ def process_one(
     bundle.add("Keabu-abuan 16 bit", greyscale16, t_grey)
     bundle.add("RGB 8 bit", rgb8, t_rgb)
 
-    # FR-3: resolusi terjaga dan nilai berada pada rentang yang dijanjikan.
     for label in LABELS:
         assert_shape(bundle.variants[label], height, width, label)
     verify_range(biner, 0, 255, "Biner")
@@ -238,8 +223,6 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         threshold_raw = _parse_threshold(args.threshold)
-
-        # Jika --input tidak diberikan, minta secara interaktif (FR-1 Metode B).
         if not args.input:
             raw_inputs = _prompt_for_input()
         else:
@@ -249,7 +232,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"GALAT: {error}", file=sys.stderr)
         return 1
     except SystemExit:
-        raise  # biar _prompt_for_input bisa keluar bersih
+        raise  
 
     output_dir = Path(args.output_dir)
     failures = 0
@@ -274,7 +257,6 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     print(f"SELESAI: {len(paths)} berkas berhasil diproses.")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

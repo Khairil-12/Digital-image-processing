@@ -1,23 +1,16 @@
 """Tampilan visual keluaran (FR-4).
-
 Menampilkan citra asal bersama tiga varian dalam figur 2x2. Array uint16 hanya
 dinormalisasi untuk keperluan tampil; array aslinya tidak pernah diubah.
 """
 
 from __future__ import annotations
-
 import matplotlib
-
 matplotlib.use("Agg")
-
 import matplotlib.pyplot as plt
 import numpy as np
-
 from .report import VARIANT_FILES
 
-#: Batas atas tampilan per dtype supaya citra 16-bit tidak tampak hitam.
 _DISPLAY_VMAX = {"uint8": 255, "uint16": 65535}
-
 
 def _panel(ax: "plt.Axes", array: np.ndarray, title: str, gray: bool) -> None:
     """Gambar satu panel: array uint16 dinormalisasi tanpa mengubah aslinya."""
@@ -30,7 +23,6 @@ def _panel(ax: "plt.Axes", array: np.ndarray, title: str, gray: bool) -> None:
     ax.set_title(f"{title}\n{array.dtype} {array.shape}", fontsize=9)
     ax.axis("off")
 
-
 def display_all(
     original: np.ndarray,
     variants: dict[str, np.ndarray],
@@ -38,13 +30,11 @@ def display_all(
     block: bool = False,
 ) -> str | None:
     """Bangun figur 2x2 berisi citra asal dan ketiga varian (FR-4).
-
     Args:
         original: (H, W, 3) uint8 RGB untuk panel pertama.
         variants: Matriks keluaran berlabel "Biner", "Keabu-abuan 16 bit", "RGB 8 bit".
         save_path: Bila diisi, figur disimpan ke path ini sebagai PNG.
         block: Bila True, jendela tunggu sampai ditutup (FR-4 window controls).
-
     Returns:
         Path figur yang disimpan, atau None bila tidak ada.
     """
@@ -68,6 +58,6 @@ def display_all(
     if save_path is not None:
         fig.savefig(save_path, dpi=110)
     if block:
-        plt.show()  # jendela menahan diri sampai pengguna menutupnya (FR-4)
+        plt.show() 
     plt.close(fig)
     return save_path

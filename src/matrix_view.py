@@ -1,22 +1,16 @@
 """Inspeksi matriks citra (FR-3): pencetak potongan matriks dan pemeriksa bentuk.
-
 Setiap keluaran diperiksa bentuk (H, W) dan rentang nilainya sehingga kebenaran
 pipeline dapat dibuktikan lewat angka di terminal, tanpa perlu GUI.
 """
 
 from __future__ import annotations
-
 import numpy as np
-
 from .image_io import CHANNEL_LABELS
 
-#: Ukuran default potongan matriks yang dicetak (FR-3).
 DEFAULT_PREVIEW = 5
 
-#: Lebar kolom saat mencetak nilai piksel.
 _COLUMN_WIDTH = 6
 
-#: Batas nilai per dtype untuk pencetakan ringkasan.
 _LIMITS = {"uint8": (0, 255), "uint16": (0, 65535)}
 
 

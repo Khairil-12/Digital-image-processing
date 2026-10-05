@@ -1,24 +1,17 @@
 """Membuat berkas citra contoh untuk pengujian (Langkah 7).
-
 Menghasilkan samples/test.bmp (8-bit), samples/test.png (16-bit), dan
 samples/test.jpg (8-bit) berisi pola bergradien yang sama, sehingga hasil
 ketiganya bisa dibandingkan langsung.
-
 Jalankan: python tests/make_samples.py
 """
 
 from __future__ import annotations
-
 from pathlib import Path
-
 import cv2
 import numpy as np
 
 SAMPLES_DIR = Path(__file__).resolve().parent / "samples"
-
-#: Sisi citra contoh; kecil supaya matriks penuh muat dicetak.
 SIZE = 32
-
 
 def _base_rgb() -> np.ndarray:
     """Buat pola RGB 8-bit dengan warnaلياً, abu-abu, dan area gelap."""
@@ -30,21 +23,16 @@ def _base_rgb() -> np.ndarray:
     rgb[SIZE // 2 :, :] = np.clip(rgb[SIZE // 2 :, :].astype(np.int16) + 60, 0, 255).astype(np.uint8)
     return rgb
 
-
 def _to_bgr(rgb: np.ndarray) -> np.ndarray:
     """Ubah RGB ke BGR sesuai urutan kanal OpenCV."""
     return np.ascontiguousarray(rgb[:, :, ::-1])
 
-
 def make_samples(directory: Path = SAMPLES_DIR) -> list[Path]:
     """Tulis tiga berkas citra contoh.
-
     Args:
         directory: Folder tujuan berkas contoh.
-
     Returns:
         Daftar Path berkas yang ditulis.
-
     Raises:
         OSError: Penulisan berkas gagal.
     """
@@ -71,9 +59,7 @@ def make_samples(directory: Path = SAMPLES_DIR) -> list[Path]:
     if not cv2.imwrite(str(jpg_path), bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 95]):
         raise OSError(f"Gagal menulis {jpg_path}")
     written.append(jpg_path)
-
     return written
-
 
 if __name__ == "__main__":
     for item in make_samples():

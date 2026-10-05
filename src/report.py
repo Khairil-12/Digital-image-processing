@@ -1,32 +1,25 @@
 """Penyimpanan keluaran dan laporan (FR-5).
-
 Menulis matriks (.npy + .txt), gambar varian, BMP 1-bit, report.txt, dan summary.csv.
 summary.csv memakai pemisah titik koma dan BOM UTF-8 agar langsung tersusun kolom di Excel.
 """
 
 from __future__ import annotations
-
 import csv
 from dataclasses import dataclass, field
 from pathlib import Path
-
 import cv2
 import numpy as np
-
 from .image_io import CHANNEL_LABELS
 from .matrix_view import format_slice, matrix_summary
 
-#: Nama berkas ringkas untuk tiap representasi (FR-5).
 VARIANT_FILES = {
     "Biner": "biner",
     "Keabu-abuan 16 bit": "greyscale16",
     "RGB 8 bit": "rgb8",
 }
 
-#: Jumlah sel matriks yang ditulis penuh ke .txt sebelum dipangkas (FR-5).
 _MAX_TXT_ELEMENTS = 64 * 64
 
-#: Pemisah dan pengkodean CSV agar Excel mem-parsing kolom dengan benar.
 _CSV_DELIMITER = ";"
 _CSV_ENCODING = "utf-8-sig"
 

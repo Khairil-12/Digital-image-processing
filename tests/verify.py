@@ -1,24 +1,18 @@
 """Suite verifikasi untuk PRD PCD (Langkah 8).
-
 Memakai assert biasa tanpa framework. Menjalankan AC-1 sampai AC-10 dan
 mencetak ALL CHECKS PASSED dengan kode keluar 0 bila semuanya benar.
-
 Jalankan: python tests/verify.py
 """
 
 from __future__ import annotations
-
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
-
 import cv2
 import numpy as np
-
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-
 from src import transforms  # noqa: E402
 from src.image_io import ImageLoadError, load_image  # noqa: E402
 from src.matrix_view import assert_shape, format_slice, verify_range  # noqa: E402
@@ -52,7 +46,6 @@ def check_three_formats(samples: dict[str, Path]) -> None:
             f"{samples[key].name} rentang float [0,1]",
             0.0 <= float(loaded.rgb_f32.min()) and float(loaded.rgb_f32.max()) <= 1.0,
         )
-
 
 def check_greyscale16(loaded) -> None:
     """AC-4: keabu-abuan 16-bit bertipe benar, rentang benar, resolusi terjaga."""
@@ -120,7 +113,6 @@ def check_rgb8(loaded) -> None:
     )
     assert_shape(rgb8, loaded.height, loaded.width, "RGB 8 bit")
 
-
 def check_resolution_preserved(loaded) -> None:
     """AC-6: ketiga keluaran mempertahankan resolusi masukan."""
     print("\nAC-6: resolusi terjaga untuk ketiga keluaran")
@@ -137,7 +129,6 @@ def check_resolution_preserved(loaded) -> None:
             str(array.shape),
         )
 
-
 def check_preview(loaded) -> None:
     """AC-7: potongan matriks 5x5 tercetak dengan header dtype dan shape."""
     print("\nAC-7: potongan matriks")
@@ -151,7 +142,6 @@ def check_preview(loaded) -> None:
         text = format_slice(array, 5)
         check(f"{label} memuat baris r0..r4", all(f"r{i}" in text for i in range(5)), text[:40])
         check(f"{label} memuat label kanal bila RGB", True if array.ndim == 2 else "kanal R" in text)
-
 
 def check_error_handling() -> None:
     """AC-10: berkas salah memberi pesan jelas, bukan traceback."""
@@ -172,7 +162,6 @@ def check_error_handling() -> None:
     finally:
         bad.unlink(missing_ok=True)
 
-
 def check_bmp_1bit(tmp_dir: Path) -> None:
     """FR-5: berkas BMP biner benar-benar 1 bit per piksel dan terbaca utuh."""
     print("\nFR-5: BMP 1-bit")
@@ -189,7 +178,6 @@ def check_bmp_1bit(tmp_dir: Path) -> None:
     check("BMP terbaca tanpa kehilangan", decoded is not None and decoded.shape == biner.shape)
     if decoded is not None:
         check("piksel BMP cocok dengan matriks biner", np.array_equal(decoded, biner))
-
 
 def check_cli_end_to_end(tmp_dir: Path) -> None:
     """FR-5/AC-9: CLI berjalan penuh dan menghasilkan seluruh artefak."""
@@ -240,8 +228,6 @@ def check_interactive_mode(tmp_dir: Path) -> None:
     print("\nAC-11/AC-12: Mode interaktif (stdin)")
     samples_dir = ROOT / "tests" / "samples"
     bmp_sample = next(p for p in samples_dir.iterdir() if p.suffix == ".bmp")
-
-    # --- Sub-test A: pipe path via stdin, verify processing succeeds ---
     interactive_out = tmp_dir / "interactive_out"
     completed = subprocess.run(
         [
@@ -273,8 +259,6 @@ def check_interactive_mode(tmp_dir: Path) -> None:
         "artefak summary.csv dari mode interaktif ada",
         (interactive_out / "summary.csv").exists(),
     )
-
-    # --- Sub-test B: pipe 'q' to quit, verify clean exit 0 ---
     completed_q = subprocess.run(
         [sys.executable, str(ROOT / "main.py")],
         input="q\n",
@@ -288,7 +272,6 @@ def check_interactive_mode(tmp_dir: Path) -> None:
         completed_q.returncode == 0,
         f"stdout: {completed_q.stdout[-200:]}\nstderr: {completed_q.stderr[-200:]}",
     )
-
 
 def main() -> int:
     """Jalankan seluruh pemeriksaan; kembalikan 0 bila semua lulus."""
@@ -317,7 +300,6 @@ def main() -> int:
     print("\n" + "=" * 78)
     print(f"ALL CHECKS PASSED ({len(PASSED)} pemeriksaan)")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
