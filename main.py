@@ -69,10 +69,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Lewati tampilan visual sepenuhnya",
     )
-    group.add_argument(
-        "--save-figure",
+    parser.add_argument(
+        "--no-figure",
         action="store_true",
-        help="Simpan figur tampilan ke <output>/figure_<nama>.png tanpa membuka jendela",
+        help="Lewati penyimpanan figur perbandingan (default: figur selalu disimpan "
+             "ke <output>/figure_<nama>.png)",
     )
     return parser
 
@@ -133,7 +134,7 @@ def process_one(
     preview: int,
     output_dir: Path,
     show: bool,
-    save_figure: bool,
+    no_figure: bool = False,
 ) -> dict[str, object]:
     """Proses satu berkas citra dari pembacaan sampai seluruh artefak tertulis.
     Args:
@@ -141,8 +142,8 @@ def process_one(
         threshold_raw: Ambang sebagai integer 0..255 atau "auto".
         preview: Sisi potongan matriks untuk dicetak dan dilaporkan.
         output_dir: Folder keluaran utama.
-        show: Bila True, figur ditampilkan di jendela.
-        save_figure: Bila True, figur disimpan ke PNG.
+        show: Bila True, figur ditampilkan di jendela (dan tetap disimpan).
+        no_figure: Bila True, figur perbandingan tidak disimpan.
     Returns:
         Dict berisi ringkasan keluaran, daftar berkas tertulis, dan figur.
     Raises:
@@ -204,11 +205,16 @@ def process_one(
     for item in result["written"]:
         print(f"  {item}")
 
-    if show or save_figure:
-        figure_path = output_dir / f"figure_{path.stem}.png" if save_figure else None
-        saved = display_all(loaded.bgr8[:, :, ::-1], bundle.variants, figure_path, block=show)
-        if saved:
-            print(f"\nFigure tampilan disimpan: {saved}")
+    # Figur perbandingan selalu disimpan kecuali --no-figure diberikan.
+    figure_path = None if no_figure else output_dir / f"figure_{path.stem}.png"
+    if show:
+        saved = display_all(loaded.bgr8[:, :, ::-1], bundle.variants, figure_path, block=True)
+    elif figure_path is not None:
+        saved = display_all(loaded.bgr8[:, :, ::-1], bundle.variants, figure_path, block=False)
+    else:
+        saved = None
+    if saved:
+        print(f"\nFigure perbandingan disimpan: {saved}")
 
     return result
 
@@ -244,8 +250,8 @@ def main(argv: list[str] | None = None) -> int:
                 threshold_raw=threshold_raw,
                 preview=args.preview,
                 output_dir=output_dir,
-                show=not args.no_display and not args.save_figure,
-                save_figure=args.save_figure,
+                show=not args.no_display,
+                no_figure=args.no_figure,
             )
         except (ImageLoadError, MatrixCheckError, ValueError) as error:
             print(f"GALAT pada {path.name}: {error}", file=sys.stderr)
