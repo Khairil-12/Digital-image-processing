@@ -16,10 +16,10 @@ def _panel(ax: "plt.Axes", array: np.ndarray, title: str, gray: bool) -> None:
     """Gambar satu panel: array uint16 dinormalisasi tanpa mengubah aslinya."""
     vmax = _DISPLAY_VMAX.get(str(array.dtype))
     shown = array.astype(np.float32) / vmax if vmax else array.astype(np.float32)
-    kwargs = {"cmap": "gray", "vmin": 0} if gray else {"vmin": 0}
-    if vmax:
-        kwargs["vmax"] = vmax
-    ax.imshow(shown, **kwargs)
+    kwargs = {"cmap": "gray"} if gray else {}
+    # shown sudah dinormalisasi ke [0,1]; vmin/vmax TIDAK diteruskan ke imshow
+    # (meneruskan vmax di sini akan menormalkan dua kali dan membuat panel hitam).
+    ax.imshow(shown, vmin=0.0, vmax=1.0, **kwargs)
     ax.set_title(f"{title}\n{array.dtype} {array.shape}", fontsize=9)
     ax.axis("off")
 
